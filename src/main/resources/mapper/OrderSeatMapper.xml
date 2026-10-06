@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.end_of_term.mapper.OrderSeatMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.end_of_term.entity.OrderSeat">
+        <id column="order_seat_id" property="orderSeatId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="seat_id" property="seatId"/>
+        <result column="price" property="price"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_seat_id, order_id, seat_id, price
+    </sql>
+
+    <select id="selectByOrderId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM order_seat WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderSeatId">
+        INSERT INTO order_seat (order_id, seat_id, price)
+        VALUES (#{orderId}, #{seatId}, #{price})
+    </insert>
+
+    <delete id="deleteByOrderId">
+        DELETE FROM order_seat WHERE order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteByUserId">
+        DELETE FROM order_seat WHERE order_id IN (SELECT order_id FROM order_ticket WHERE user_id = #{userId})
+    </delete>
+
+    <delete id="deleteByScreeningId">
+        DELETE FROM order_seat WHERE order_id IN (SELECT order_id FROM order_ticket WHERE screening_id = #{screeningId})
+    </delete>
+
+</mapper>

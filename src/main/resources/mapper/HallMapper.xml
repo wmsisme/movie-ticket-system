@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.end_of_term.mapper.HallMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.end_of_term.entity.Hall">
+        <id column="hall_id" property="hallId"/>
+        <result column="cinema_id" property="cinemaId"/>
+        <result column="name" property="name"/>
+        <result column="seat_rows" property="seatRows"/>
+        <result column="seat_cols" property="seatCols"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        hall_id, cinema_id, name, seat_rows, seat_cols
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM hall ORDER BY hall_id
+    </select>
+
+    <select id="selectByCinemaId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM hall WHERE cinema_id = #{cinemaId}
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM hall WHERE hall_id = #{hallId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="hallId">
+        INSERT INTO hall (cinema_id, name, seat_rows, seat_cols)
+        VALUES (#{cinemaId}, #{name}, #{seatRows}, #{seatCols})
+    </insert>
+
+    <update id="update">
+        UPDATE hall
+        <set>
+            <if test="cinemaId != null">cinema_id = #{cinemaId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="seatRows != null">seat_rows = #{seatRows},</if>
+            <if test="seatCols != null">seat_cols = #{seatCols},</if>
+        </set>
+        WHERE hall_id = #{hallId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM hall WHERE hall_id = #{hallId}
+    </delete>
+
+    <delete id="deleteByCinemaId">
+        DELETE FROM hall WHERE cinema_id = #{cinemaId}
+    </delete>
+
+</mapper>

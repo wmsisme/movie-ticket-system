@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.end_of_term.mapper.MovieMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.end_of_term.entity.Movie">
+        <id column="movie_id" property="movieId"/>
+        <result column="title" property="title"/>
+        <result column="director" property="director"/>
+        <result column="cast" property="cast"/>
+        <result column="genre" property="genre"/>
+        <result column="duration" property="duration"/>
+        <result column="release_date" property="releaseDate"/>
+        <result column="status" property="status"/>
+        <result column="description" property="description"/>
+        <result column="poster_url" property="posterUrl"/>
+        <result column="rating" property="rating"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        movie_id, title, director, cast, genre, duration, release_date, status, description, poster_url, rating
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM movie ORDER BY movie_id DESC
+    </select>
+
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM movie WHERE status = #{status} ORDER BY movie_id DESC
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM movie WHERE movie_id = #{movieId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="movieId">
+        INSERT INTO movie (title, director, cast, genre, duration, release_date, status, description, poster_url, rating)
+        VALUES (#{title}, #{director}, #{cast}, #{genre}, #{duration}, #{releaseDate}, #{status}, #{description}, #{posterUrl}, #{rating})
+    </insert>
+
+    <update id="update">
+        UPDATE movie
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="director != null">director = #{director},</if>
+            <if test="cast != null">cast = #{cast},</if>
+            <if test="genre != null">genre = #{genre},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="releaseDate != null">release_date = #{releaseDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="posterUrl != null">poster_url = #{posterUrl},</if>
+            <if test="rating != null">rating = #{rating},</if>
+        </set>
+        WHERE movie_id = #{movieId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM movie WHERE movie_id = #{movieId}
+    </delete>
+
+</mapper>

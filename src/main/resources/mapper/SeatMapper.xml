@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.end_of_term.mapper.SeatMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.end_of_term.entity.Seat">
+        <id column="seat_id" property="seatId"/>
+        <result column="hall_id" property="hallId"/>
+        <result column="row_num" property="rowNum"/>
+        <result column="col_num" property="colNum"/>
+        <result column="seat_code" property="seatCode"/>
+        <result column="seat_type" property="seatType"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        seat_id, hall_id, row_num, col_num, seat_code, seat_type, status
+    </sql>
+
+    <select id="selectByHallId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM seat WHERE hall_id = #{hallId} ORDER BY row_num, col_num
+    </select>
+
+    <select id="selectAvailableByScreeningId" resultMap="BaseResultMap">
+        SELECT s.seat_id, s.hall_id, s.row_num, s.col_num, s.seat_code, s.seat_type, s.status
+        FROM seat s
+        WHERE s.hall_id = #{hallId}
+          AND s.seat_id NOT IN (
+              SELECT os.seat_id FROM order_seat os
+              JOIN order_ticket ot ON os.order_id = ot.order_id
+              WHERE ot.screening_id = #{screeningId}
+                AND ot.status IN (0, 1)
+          )
+        ORDER BY s.row_num, s.col_num
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM seat WHERE seat_id = #{seatId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="seatId">
+        INSERT INTO seat (hall_id, row_num, col_num, seat_code, seat_type, status)
+        VALUES (#{hallId}, #{rowNum}, #{colNum}, #{seatCode}, #{seatType}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE seat
+        <set>
+            <if test="hallId != null">hall_id = #{hallId},</if>
+            <if test="rowNum != null">row_num = #{rowNum},</if>
+            <if test="colNum != null">col_num = #{colNum},</if>
+            <if test="seatCode != null">seat_code = #{seatCode},</if>
+            <if test="seatType != null">seat_type = #{seatType},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE seat_id = #{seatId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM seat WHERE seat_id = #{seatId}
+    </delete>
+
+    <delete id="deleteByHallId">
+        DELETE FROM seat WHERE hall_id = #{hallId}
+    </delete>
+
+</mapper>

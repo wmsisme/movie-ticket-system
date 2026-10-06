@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.end_of_term.mapper.CinemaMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.end_of_term.entity.Cinema">
+        <id column="cinema_id" property="cinemaId"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="city" property="city"/>
+        <result column="phone" property="phone"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        cinema_id, name, address, city, phone, latitude, longitude
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM cinema ORDER BY cinema_id
+    </select>
+
+    <select id="selectByCity" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM cinema WHERE city = #{city} ORDER BY cinema_id
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM cinema WHERE cinema_id = #{cinemaId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cinemaId">
+        INSERT INTO cinema (name, address, city, phone, latitude, longitude)
+        VALUES (#{name}, #{address}, #{city}, #{phone}, #{latitude}, #{longitude})
+    </insert>
+
+    <update id="update">
+        UPDATE cinema
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+        </set>
+        WHERE cinema_id = #{cinemaId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM cinema WHERE cinema_id = #{cinemaId}
+    </delete>
+
+</mapper>
